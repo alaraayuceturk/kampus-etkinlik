@@ -5,7 +5,7 @@ Bu proje, mühendislik ve kampüs etkinliklerini listeleyen, saf semantik HTML i
 ## Proje ve Teslim Bilgileri
 - **Geliştirici:** Alara Yücetürk
 - **Git Etiketi (Tag):** sprint-01
-- **Canlı Yayın Adresi (Vercel):
+- **Canlı Yayın Adresi (Vercel):**https://kampus-etkinlik-nine.vercel.app
 
 ## Sayfa Yapısı
 - `index.html`: Uygulama tanıtımı ve yaklaşan iki öne çıkan etkinlik.
