@@ -4,7 +4,6 @@ const form = document.querySelector("#etkinlik-formu");
 const mesajBox = document.querySelector("#form-mesaj");
 
 if (form) {
-  // 1. Kategorileri select kutusuna doldur
   const katSelect = form.querySelector("#kategori");
   if (katSelect) {
     const kategoriler = [...new Set(events.map(e => e.category))];
@@ -16,7 +15,6 @@ if (form) {
     });
   }
 
-  // 2. Güncelleme modu kontrolü
   const id = new URLSearchParams(location.search).get("id");
   const isGuncelle = form.dataset.mode === "guncelle";
   const secilenEtkinlik = events.find(e => e.id === id);
@@ -31,7 +29,6 @@ if (form) {
         </div>
       `;
     } else {
-      // Formu etkinliğin mevcut verileriyle doldur
       if (form.elements.ad) form.elements.ad.value = secilenEtkinlik.title;
       if (form.elements.kategori) form.elements.kategori.value = secilenEtkinlik.category;
       
@@ -46,9 +43,8 @@ if (form) {
     }
   }
 
-  // 3. Form Yakalama ve Doğrulama (Validation)
   form.addEventListener("submit", e => {
-    e.preventDefault(); // Sayfa yenilenmesini engelle
+    e.preventDefault();
 
     const fd = new FormData(form);
     const data = {
@@ -62,7 +58,6 @@ if (form) {
       description: (fd.get("aciklama") || "").trim()
     };
 
-    // Hataları Temizle
     document.querySelectorAll(".hata-mesaji").forEach(el => el.textContent = "");
     form.querySelectorAll("[aria-invalid]").forEach(el => el.removeAttribute("aria-invalid"));
 
@@ -77,7 +72,6 @@ if (form) {
       errors.kontenjan = "Kontenjan 1 ile 1000 arasında olmalıdır.";
     }
 
-    // Hata Var mı Kontrol Et
     if (Object.keys(errors).length > 0) {
       for (let key in errors) {
         const inputEl = form.elements[key];
@@ -89,7 +83,6 @@ if (form) {
         mesajBox.innerHTML = `<p style="color: #d32f2f; font-weight: bold;">Formda hatalı alanlar var.</p>`;
       }
     } else {
-      // Başarılı Çıktı
       if (mesajBox) {
         mesajBox.innerHTML = `
           <div style="border: 2px solid #2e7d32; background-color: #e8f5e9; color: #1b5e20; padding: 1rem; border-radius: 8px; margin-top: 1rem;">

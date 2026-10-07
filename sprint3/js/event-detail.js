@@ -20,7 +20,8 @@ if (container) {
     document.title = event.title;
     
     const [day, month, year] = event.date.split("-");
-    const formattedDate = new Date(year, month - 1, day).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" });
+    const dateObj = new Date(year, month - 1, day);
+    const formattedDate = dateObj.toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" });
 
     container.innerHTML = `
       <figure style="margin-bottom: 1rem;">

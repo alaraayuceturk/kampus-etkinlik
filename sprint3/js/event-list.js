@@ -5,14 +5,12 @@ const aramaInput = document.querySelector("#arama");
 const kategoriSelect = document.querySelector("#kategori-filtre");
 const sonucSatiri = document.querySelector("#sonuc");
 
-// Tarihi slayttaki gibi "18 Ekim 2026" okunuşuna çeviren yardımcı fonksiyon
 function formatDate(dateStr) {
   const [day, month, year] = dateStr.split("-");
   const dateObj = new Date(year, month - 1, day);
   return dateObj.toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" });
 }
 
-// Kart HTML şablonu
 function createCard(event) {
   return `
     <article class="etkinlik-kart">
@@ -40,7 +38,6 @@ function render(dizi) {
 }
 
 if (list) {
-  // Eğer data-limit varsa (Ana Sayfa) -> Tarihe göre sırala ve ilk 2'yi göster
   if (list.dataset.limit) {
     const yaklasan = [...events]
       .sort((a, b) => {
@@ -51,7 +48,6 @@ if (list) {
       .slice(0, Number(list.dataset.limit));
     render(yaklasan);
   } else {
-    // Etkinlikler Sayfası -> Kategorileri dinamik doldur ve arama/filtreyi bağla
     if (kategoriSelect) {
       const kategoriler = [...new Set(events.map(e => e.category))];
       kategoriler.forEach(kat => {
