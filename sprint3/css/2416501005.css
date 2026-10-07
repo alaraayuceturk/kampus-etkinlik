@@ -1,0 +1,184 @@
+/* Alara YÜCETÜRK 2416501005 */
+:root {
+  --no: 2416501005; /* <-- BURAYA KENDİ NUMARANI YAZ */
+  --ton: mod(var(--no), 360);
+  --renk-ana: hsl(var(--ton) 65% 38%);
+  --renk-zemin: hsl(var(--ton) 30% 97%);
+  --font: "Times New Roman", serif; /* <-- SON HANENE GÖRE SEÇ */
+  --bosluk-m: 1rem;
+  --kose: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  background-color: var(--renk-zemin);
+  color: #222;
+  line-height: 1.5;
+  padding: var(--bosluk-m);
+}
+
+header {
+  border-bottom: 2px solid var(--renk-ana);
+  padding-bottom: var(--bosluk-m);
+  margin-bottom: var(--bosluk-m);
+}
+
+header h1 {
+  color: var(--renk-ana);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* Parmakla basma alanı kuralı */
+  padding: 0 0.5rem;
+  color: var(--renk-ana);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Telefon öncelikli tek sütun grid */
+.etkinlik-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--bosluk-m);
+  margin: var(--bosluk-m) 0;
+}
+
+.etkinlik-kart {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: var(--kose);
+  padding: var(--bosluk-m);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.etkinlik-kart h3 {
+  color: var(--renk-ana);
+}
+
+.btn-detay {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--renk-ana);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Detay sayfası düzeni */
+.detay-kapsayici {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosluk-m);
+  background: #ffffff;
+  padding: var(--bosluk-m);
+  border-radius: var(--kose);
+}
+
+.detay-kapsayici figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--kose);
+  display: block;
+}
+
+.detay-kapsayici dl {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  row-gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.detay-kapsayici dt {
+  font-weight: bold;
+  color: var(--renk-ana);
+}
+
+/* Form stilleri */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bosluk-m);
+  background: #ffffff;
+  padding: var(--bosluk-m);
+  border-radius: var(--kose);
+  max-width: 500px;
+}
+
+.form-grup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+label {
+  font-weight: bold;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 44px;
+  width: 100%;
+}
+
+/* Boş geçilince kırmızı çerçeve */
+input:invalid, select:invalid, textarea:invalid {
+  border-color: #d32f2f;
+}
+
+button {
+  min-height: 44px;
+  background-color: var(--renk-ana);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 1.5rem;
+}
+
+/* Masaüstü Ekran (Geniş Ekran) */
+@media (min-width: 768px) {
+  body {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .etkinlik-grid {
+    grid-template-columns: repeat(3, 1fr); /* Geniş ekranda 3 sütun */
+  }
+
+  .detay-kapsayici {
+    flex-direction: row; /* Solda afiş, sağda künye */
+    align-items: flex-start;
+  }
+
+  .detay-kapsayici figure,
+  .detay-kapsayici .kunye {
+    flex: 1;
+  }
+}
