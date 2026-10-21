@@ -1,303 +1,146 @@
 import { useState, useEffect } from "react";
-import "./App.css";
-import { events } from "./data/events";
+import type { PageName } from "./types/page";
 import type { CampusEvent, Category } from "./types/campus-event";
-import { searchEvents, filterByCategory, findEventById } from "./utils/filter-events";
+import { eventsData as initialEvents, categories } from "./data/events";
+import { filterEvents } from "./utils/filter-events";
 
-type PageName = "home" | "events" | "detail" | "add" | "update";
+import Header from "./components/Layout/Header";
+import Navigation from "./components/Layout/Navigation";
+import Footer from "./components/Layout/Footer";
+import EventList from "./components/events/EventList";
+import EventFilter from "./components/events/EventFilter";
+import EventDetail from "./components/events/EventDetail";
+import EventForm from "./components/forms/EventForm";
 
 export function App() {
   const [page, setPage] = useState<PageName>("home");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState<string>("");
+  const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<Category | "">("");
 
-  // Sayfa değiştirme fonksiyonu
-  const go = (nextPage: PageName, id: string | null = null) => {
-    setPage(nextPage);
-    setSelectedId(id);
-  };
+  const [events, setEvents] = useState<CampusEvent[]>(initialEvents);
 
-  // Seçili etkinlik
-  const selectedEvent = selectedId ? findEventById(events, selectedId) : undefined;
+  const filteredEvents = filterEvents(events, searchText, category as Category | "");
+  const selectedEvent = events.find((e) => e.id === selectedId);
 
-  // ADIM 11: Sekme Başlığı Güncelleme (useEffect)
+  // Hocanın İstediği: Tarayıcı Tab (Sekme) Başlığını Dinamik Değiştirme
   useEffect(() => {
-    if (page === "home") document.title = "Kampüs Etkinlikleri | Ana Sayfa";
-    else if (page === "events") document.title = "Kampüs Etkinlikleri | Etkinlikler";
-    else if (page === "detail" && selectedEvent)
-      document.title = `Kampüs Etkinlikleri | ${selectedEvent.title}`;
-    else if (page === "add") document.title = "Kampüs Etkinlikleri | Etkinlik Ekle";
-    else if (page === "update") document.title = "Kampüs Etkinlikleri | Etkinlik Güncelle";
+    if (page === "detail" && selectedEvent) {
+      document.title = selectedEvent.title;
+    } else if (page === "events") {
+      document.title = "Tüm Etkinlikler - Kampüs Etkinlikleri";
+    } else if (page === "add") {
+      document.title = "Yeni Etkinlik Ekle";
+    } else if (page === "update") {
+      document.title = "Etkinlik Güncelle";
+    } else {
+      document.title = "Kampüs Etkinlikleri";
+    }
   }, [page, selectedEvent]);
 
-  // Ana sayfa için yaklaşan 2 etkinlik
-  const upcomingEvents = [...events]
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(0, 2);
+  const handleShowDetail = (id: string) => {
+    setSelectedId(id);
+    setPage("detail");
+  };
 
-  // Etkinlikler sayfası filtreleme
-  const filteredEvents = filterByCategory(searchEvents(events, searchText), category);
+  const handleAddEvent = (newEventData: Partial<CampusEvent>) => {
+    const newEvent: CampusEvent = {
+      id: `event-${Date.now()}`,
+      title: newEventData.title || "Yeni Etkinlik",
+      category: (newEventData.category as Category) || "Seminer",
+      capacity: newEventData.capacity || 50,
+      date: newEventData.date || new Date().toISOString().split("T")[0],
+      time: newEventData.time || "12:00",
+      location: newEventData.location || "Kampüs",
+      description: newEventData.description || "",
+    };
 
-  // Kart Rendering Fonksiyonu
-  const renderCard = (event: CampusEvent) => (
-    <article className="kart" key={event.id}>
-      <div className="kart-rozet">{event.category}</div>
-      <h2>{event.title}</h2>
-      <p className="kart-bilgi">
-        <strong>Tarih:</strong> {event.date}, {event.time}<br />
-        <strong>Yer:</strong> {event.location}<br />
-        <strong>Kontenjan:</strong> {event.capacity} kişi
-      </p>
-      <p>{event.description}</p>
-      <button
-        type="button"
-        className="btn-detay"
-        onClick={() => go("detail", event.id)}
-      >
-        Detayları gör
-      </button>
-    </article>
-  );
+    setEvents((prev) => [newEvent, ...prev]);
+    alert("Etkinlik başarıyla eklendi!");
+    setPage("events");
+  };
+
+  const handleUpdateEvent = (updatedData: Partial<CampusEvent>) => {
+    if (!selectedId) return;
+
+    setEvents((prev) =>
+      prev.map((item) =>
+        item.id === selectedId ? { ...item, ...updatedData } : item
+      )
+    );
+
+    alert("Etkinlik başarıyla güncellendi!");
+    setPage("events");
+  };
+
+  const handleDeleteEvent = (id: string) => {
+    setEvents((prev) => prev.filter((item) => item.id !== id));
+    alert("Etkinlik silindi.");
+    setPage("events");
+  };
+
+  // Hocanın İstediği: Navigasyon / Header Başlığında Etkinlik Adının Görünmesi
+  const getHeaderTitle = () => {
+    if (page === "detail" && selectedEvent) {
+      return selectedEvent.title;
+    }
+    if (page === "home") return "Kampüs Etkinlikleri";
+    if (page === "events") return "Tüm Etkinlikler";
+    if (page === "add") return "Yeni Etkinlik Ekle";
+    return "Etkinlik Güncelle";
+  };
 
   return (
-    <div className="site-konteyner">
-      <header className="site-baslik">
-        <h1>Kampüs Etkinlikleri</h1>
-        <p>Fakültedeki seminer, atölye ve söyleşileri tek yerden takip edin.</p>
-      </header>
+    <div className="app-container">
+      <Header 
+        title={getHeaderTitle()} 
+        text={page === "home" ? "Yaklaşan etkinlikleri kaçırma" : undefined} 
+      />
+      
+      <Navigation current={page} onNavigate={(go) => setPage(go)} />
 
-      <nav className="menu">
-        <button
-          type="button"
-          className={page === "home" ? "aktif" : ""}
-          onClick={() => go("home")}
-        >
-          Ana Sayfa
-        </button>
-        <button
-          type="button"
-          className={page === "events" ? "aktif" : ""}
-          onClick={() => go("events")}
-        >
-          Etkinlikler
-        </button>
-        <button
-          type="button"
-          className={page === "add" ? "aktif" : ""}
-          onClick={() => go("add")}
-        >
-          Ekle
-        </button>
-      </nav>
-
-      <main className="icerik">
-        {/* ADIM 9: ANA SAYFA */}
+      <main>
         {page === "home" && (
-          <section>
-            <h2>Yaklaşan 2 Etkinlik</h2>
-            <div className="etkinlik-listesi">{upcomingEvents.map(renderCard)}</div>
-            <div style={{ marginTop: "20px" }}>
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={() => go("events")}
-              >
-                Tüm etkinlikleri gör
-              </button>
-            </div>
-          </section>
+          <EventList events={events.slice(0, 2)} onShowDetail={handleShowDetail} />
         )}
 
-        {/* ADIM 10: ETKİNLİKLER SAYFASI */}
         {page === "events" && (
-          <section>
-            <h2>Tüm Etkinlikler</h2>
-            <p className="alt-baslik">Ekim ayında kampüste düzenlenen etkinlikler.</p>
-
-            <div className="filtre-alani">
-              <div className="filtre-grup">
-                <label htmlFor="search">Etkinlik ara</label>
-                <input
-                  id="search"
-                  type="search"
-                  placeholder="Örn. atölye, kariyer"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-              </div>
-
-              <div className="filtre-grup">
-                <label htmlFor="category">Kategori</label>
-                <select
-                  id="category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value as Category | "")}
-                >
-                  <option value="">Tümü</option>
-                  <option value="Seminer">Seminer</option>
-                  <option value="Atölye">Atölye</option>
-                  <option value="Söyleşi">Söyleşi</option>
-                  <option value="Yarışma">Yarışma</option>
-                </select>
-              </div>
-            </div>
-
-            <p className="sonuc-sayisi">
-              {filteredEvents.length > 0
-                ? `${filteredEvents.length} etkinlik listeleniyor.`
-                : "Aradığınız kriterlere uygun etkinlik bulunamadı."}
-            </p>
-
-            <div className="etkinlik-listesi">{filteredEvents.map(renderCard)}</div>
-          </section>
+          <>
+            <EventFilter 
+              searchText={searchText} 
+              category={category} 
+              categories={categories} 
+              onSearchChange={setSearchText} 
+              onCategoryChange={(val) => setCategory(val as Category | "")} 
+            />
+            <EventList events={filteredEvents} onShowDetail={handleShowDetail} emptyText="Aramanıza uygun etkinlik bulunamadı." />
+          </>
         )}
 
-        {/* ADIM 12: DETAY SAYFASI */}
-        {page === "detail" && (
-          <section>
-            {!selectedEvent ? (
-              <div className="hata-kutusu">
-                <p>Etkinlik bulunamadı.</p>
-                <button type="button" onClick={() => go("events")}>
-                  Listeye dön
-                </button>
-              </div>
-            ) : (
-              <article className="detay-sayfasi">
-                <h2>{selectedEvent.title}</h2>
-                <div className="detay-grid">
-                  {selectedEvent.image && (
-                    <figure className="detay-afis">
-                      <img src={selectedEvent.image} alt={`${selectedEvent.title} afişi`} />
-                    </figure>
-                  )}
-                  <div className="detay-kunye">
-                    <h3>Etkinlik Künyesi</h3>
-                    <p><strong>Tarih:</strong> {selectedEvent.date}, {selectedEvent.time}</p>
-                    <p><strong>Yer:</strong> {selectedEvent.location}</p>
-                    <p><strong>Kategori:</strong> {selectedEvent.category}</p>
-                    <p><strong>Kontenjan:</strong> {selectedEvent.capacity} kişi</p>
-                  </div>
-                </div>
-                <div className="detay-aciklama">
-                  <h3>Açıklama</h3>
-                  <p>{selectedEvent.description}</p>
-                </div>
-                <div className="detay-butonlar">
-                  <button type="button" onClick={() => go("events")}>
-                    Listeye dön
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-primary"
-                    onClick={() => go("update", selectedEvent.id)}
-                  >
-                    Bu etkinliği güncelle
-                  </button>
-                </div>
-              </article>
-            )}
-          </section>
+        {page === "detail" && selectedEvent && (
+          <EventDetail 
+            event={selectedEvent} 
+            onBack={() => setPage("events")} 
+            onEdit={(id) => { setSelectedId(id); setPage("update"); }} 
+            onDelete={handleDeleteEvent}
+          />
         )}
 
-        {/* ADIM 13: EKLE VE GÜNCELLE FORM SAYFALARI */}
         {(page === "add" || page === "update") && (
-          <section>
-            <h2>{page === "add" ? "Etkinlik Ekle" : "Etkinlik Güncelle"}</h2>
-            <p className="bilgi-notu">Bu sprintte form sadece görünüm; kayıt yapılmaz.</p>
-
-            <form className="form-kutusu" onSubmit={(e) => e.preventDefault()}>
-              <div className="form-grup">
-                <label htmlFor="title">Etkinlik Adı</label>
-                <input
-                  id="title"
-                  type="text"
-                  maxLength={80}
-                  placeholder="Örn. Kariyer Günleri 2026"
-                  defaultValue={page === "update" && selectedEvent ? selectedEvent.title : ""}
-                />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="form-category">Kategori</label>
-                <select
-                  id="form-category"
-                  defaultValue={
-                    page === "update" && selectedEvent ? selectedEvent.category : ""
-                  }
-                >
-                  <option value="">Seçiniz</option>
-                  <option value="Seminer">Seminer</option>
-                  <option value="Atölye">Atölye</option>
-                  <option value="Söyleşi">Söyleşi</option>
-                  <option value="Yarışma">Yarışma</option>
-                </select>
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="date">Tarih</label>
-                <input
-                  id="date"
-                  type="date"
-                  defaultValue={page === "update" && selectedEvent ? selectedEvent.date : ""}
-                />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="time">Saat</label>
-                <input
-                  id="time"
-                  type="time"
-                  defaultValue={page === "update" && selectedEvent ? selectedEvent.time : ""}
-                />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="location">Yer</label>
-                <input
-                  id="location"
-                  type="text"
-                  placeholder="Örn. A Blok Konferans Salonu"
-                  defaultValue={
-                    page === "update" && selectedEvent ? selectedEvent.location : ""
-                  }
-                />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="capacity">Kontenjan</label>
-                <input
-                  id="capacity"
-                  type="number"
-                  defaultValue={
-                    page === "update" && selectedEvent ? selectedEvent.capacity : ""
-                  }
-                />
-              </div>
-
-              <div className="form-grup">
-                <label htmlFor="description">Açıklama</label>
-                <textarea
-                  id="description"
-                  rows={5}
-                  defaultValue={
-                    page === "update" && selectedEvent ? selectedEvent.description : ""
-                  }
-                />
-              </div>
-
-              <button type="submit" className="btn-primary">
-                {page === "add" ? "Ekle" : "Güncelle"}
-              </button>
-            </form>
-          </section>
+          <EventForm 
+            initialData={page === "update" ? selectedEvent : undefined}
+            onSubmit={(formData) => {
+              if (page === "add") {
+                handleAddEvent(formData);
+              } else {
+                handleUpdateEvent(formData);
+              }
+            }} 
+          />
         )}
       </main>
 
-      <footer className="site-altlik">
-        <p>Alara Yücetürk - 2026</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

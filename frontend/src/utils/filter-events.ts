@@ -24,3 +24,12 @@ export function findEventById(
 ): CampusEvent | undefined {
   return list.find((e) => e.id === id);
 }
+
+export function filterEvents(
+  list: CampusEvent[],
+  text: string,
+  category: Category | ""
+): CampusEvent[] {
+  const searched = searchEvents(list, text);
+  return filterByCategory(searched, category);
+}

@@ -1,6 +1,6 @@
 import type { CampusEvent } from "../types/campus-event";
 
-export const events: CampusEvent[] = [
+export const eventsData: CampusEvent[] = [
   {
     id: "event-1",
     title: "Kariyer Günleri 2026",
@@ -63,3 +63,5 @@ export const events: CampusEvent[] = [
     description: "Ağ güvenliği ve kişisel veri koruma teknikleri."
   }
 ];
+
+export const categories = ["Seminer", "Atölye", "Söyleşi", "Yarışma"] as const;
