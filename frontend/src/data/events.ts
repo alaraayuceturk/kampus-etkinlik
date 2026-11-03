@@ -10,7 +10,7 @@ export const eventsData: CampusEvent[] = [
     time: "14:00",
     location: "A Blok Konferans Salonu",
     description: "Mezunlarla kariyer söyleşileri ve şirket standları.",
-    image: "/afis.svg"
+    
   },
   {
     id: "event-2",
