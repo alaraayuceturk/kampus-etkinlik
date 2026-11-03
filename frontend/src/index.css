@@ -1,0 +1,288 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Banner - Orijinal Renk Paletimiz (#2b3e50) */
+.header-banner {
+  background-color: #2b3e50;
+  color: white;
+  padding: 16px 20px;
+  border-bottom: 3px solid #1a252f;
+}
+
+.header-banner h1 {
+  font-size: 22px;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.header-banner p {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+
+/* Navbar */
+.nav-menu {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  background-color: #2b3e50;
+  padding: 0 20px 12px 20px;
+}
+
+.nav-link {
+  color: #ecf0f1;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.nav-link.active, .nav-link:hover {
+  background-color: #34495e;
+  color: #fff;
+}
+
+/* Main Container */
+.main-content {
+  flex: 1;
+  max-width: 1000px;
+  width: 100%;
+  margin: 15px auto;
+  padding: 0 15px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 14px 0;
+  color: #6c757d;
+  font-size: 12px;
+  border-top: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  margin-top: auto;
+}
+
+/* 3'lü Grid */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+@media (max-width: 850px) {
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.event-card {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.event-card h3 {
+  font-size: 16px;
+  color: #2b3e50;
+  margin-bottom: 2px;
+}
+
+.event-card .badge {
+  display: inline-block;
+  color: #6c757d;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.event-card p {
+  font-size: 12.5px;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.btn-detail {
+  display: inline-block;
+  margin-top: 8px;
+  color: #2b3e50;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.btn-theme {
+  background-color: #2b3e50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.btn-theme:hover {
+  background-color: #1a252f;
+}
+
+/* Filter Box */
+.filter-box {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 550px) {
+  .filter-box {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.input-field, .select-field, .textarea-field {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.input-field.error, .select-field.error, .textarea-field.error, input[aria-invalid="true"] {
+  border-color: #dc3545;
+}
+
+.hata-metni, .error-text {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Slayt 17: Tablo ve Mobil Kart CSS'i */
+.tablo {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  margin-top: 15px;
+}
+
+.tablo th, .tablo td {
+  border: 1px solid #dee2e6;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.tablo th {
+  background-color: #2b3e50;
+  color: #fff;
+}
+
+.islemler {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-sm-edit {
+  background: #34495e;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-sm-delete, .buton-sil {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+@media (max-width: 699px) {
+  .tablo thead { display: none; }
+  .tablo tr { 
+    display: block; 
+    border: 1px solid #dee2e6; 
+    border-radius: 6px; 
+    margin-bottom: 12px; 
+    padding: 8px;
+    background: white;
+  }
+  .tablo td { display: block; border: none; padding: 4px 8px; }
+  .tablo td.islemler { display: flex; gap: 8px; margin-top: 6px; }
+  .tablo td[data-baslik]::before {
+    content: attr(data-baslik) ": ";
+    font-weight: 700;
+  }
+}
+
+/* Detail View Layout */
+.detail-container {
+  display: flex;
+  gap: 25px;
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+@media (max-width: 700px) {
+  .detail-container {
+    flex-direction: column;
+  }
+}
+
+.poster-box {
+  flex: 1;
+  background: #1a252f;
+  color: white;
+  padding: 25px 15px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.info-box {
+  flex: 1;
+}
+
+.form-card {
+  background: white;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}

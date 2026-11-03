@@ -1,79 +1,148 @@
-import { useState } from "react";
-import type { CampusEvent, Category } from "../../types/campus-event";
+import React, { useState, useEffect } from "react";
+import type { CampusEvent, EventFormData } from "../../types/campus-event";
+import { validateEvent, type EventFormErrors } from "../../utils/validate-event";
 
 interface EventFormProps {
-  onSubmit: (data: Partial<CampusEvent>) => void;
-  initialData?: CampusEvent;
+  initialData?: EventFormData | CampusEvent;
+  submitText?: string;
+  onSubmit: (data: EventFormData) => void;
 }
 
-function EventForm({ onSubmit, initialData }: EventFormProps) {
-  const [title, setTitle] = useState(initialData?.title || "");
-  const [category, setCategory] = useState<Category>((initialData?.category as Category) || "Seminer");
-  const [date, setDate] = useState(initialData?.date || new Date().toISOString().split("T")[0]);
-  const [time, setTime] = useState(initialData?.time || "14:00");
-  const [location, setLocation] = useState(initialData?.location || "");
-  const [capacity, setCapacity] = useState(initialData?.capacity || 50);
-  const [description, setDescription] = useState(initialData?.description || "");
+export function EventForm({ initialData, submitText = "Kaydet", onSubmit }: EventFormProps) {
+  const [data, setData] = useState<EventFormData>({
+    title: initialData?.title || "",
+    category: initialData?.category || "",
+    date: initialData?.date || "",
+    location: initialData?.location || "",
+    quota: initialData?.quota || 50,
+    description: initialData?.description || "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [errors, setErrors] = useState<EventFormErrors>({});
+
+  useEffect(() => {
+    if (initialData) {
+      setData({
+        title: initialData.title || "",
+        category: initialData.category || "",
+        date: initialData.date || "",
+        location: initialData.location || "",
+        quota: initialData.quota || 50,
+        description: initialData.description || "",
+      });
+    }
+  }, [initialData]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: name === "quota" ? (value === "" ? "" : Number(value)) : value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit({
-      title,
-      category,
-      date,
-      time,
-      location,
-      capacity,
-      description,
-    });
+    const found = validateEvent(data);
+    setErrors(found);
+
+    if (Object.keys(found).length === 0) {
+      onSubmit(data);
+    }
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h2>{initialData ? "Etkinlik Güncelle" : "Yeni Etkinlik Ekle"}</h2>
-      
-      <div className="form-alani">
-        <label>Etkinlik Başlığı</label>
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-      </div>
+    <div className="form-card">
+      <form noValidate onSubmit={handleSubmit}>
+        <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "3px", fontSize: "13px" }}>Etkinlik Adı</label>
+          <input
+            type="text"
+            name="title"
+            className={`input-field ${errors.title ? "error" : ""}`}
+            aria-invalid={errors.title ? true : undefined}
+            value={data.title}
+            onChange={handleChange}
+          />
+          {errors.title && <span className="hata-metni error-text">{errors.title}</span>}
+        </div>
 
-      <div className="form-alani">
-        <label>Kategori</label>
-        <select value={category} onChange={(e) => setCategory(e.target.value as Category)}>
-          <option value="Seminer">Seminer</option>
-          <option value="Atölye">Atölye</option>
-          <option value="Söyleşi">Söyleşi</option>
-          <option value="Yarışma">Yarışma</option>
-        </select>
-      </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "3px", fontSize: "13px" }}>Kategori</label>
+          <select
+            name="category"
+            className={`select-field ${errors.category ? "error" : ""}`}
+            aria-invalid={errors.category ? true : undefined}
+            value={data.category}
+            onChange={handleChange}
+          >
+            <option value="">Seçiniz</option>
+            <option value="Seminer">Seminer</option>
+            <option value="Atölye">Atölye</option>
+            <option value="Söyleşi">Söyleşi</option>
+            <option value="Yarışma">Yarışma</option>
+          </select>
+          {errors.category && <span className="hata-metni error-text">{errors.category}</span>}
+        </div>
 
-      <div className="form-alani">
-        <label>Tarih</label>
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-      </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "3px", fontSize: "13px" }}>Tarih</label>
+          <input
+            type="text"
+            name="date"
+            className={`input-field ${errors.date ? "error" : ""}`}
+            aria-invalid={errors.date ? true : undefined}
+            value={data.date}
+            onChange={handleChange}
+            placeholder="12 Ekim 2026, 14:00"
+          />
+          {errors.date && <span className="hata-metni error-text">{errors.date}</span>}
+        </div>
 
-      <div className="form-alani">
-        <label>Saat</label>
-        <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
-      </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "3px", fontSize: "13px" }}>Yer</label>
+          <input
+            type="text"
+            name="location"
+            className={`input-field ${errors.location ? "error" : ""}`}
+            aria-invalid={errors.location ? true : undefined}
+            value={data.location}
+            onChange={handleChange}
+          />
+          {errors.location && <span className="hata-metni error-text">{errors.location}</span>}
+        </div>
 
-      <div className="form-alani">
-        <label>Mekan / Yer</label>
-        <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
-      </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "3px", fontSize: "13px" }}>Kontenjan</label>
+          <input
+            type="number"
+            name="quota"
+            className={`input-field ${errors.quota ? "error" : ""}`}
+            aria-invalid={errors.quota ? true : undefined}
+            value={data.quota}
+            onChange={handleChange}
+          />
+          {errors.quota && <span className="hata-metni error-text">{errors.quota}</span>}
+        </div>
 
-      <div className="form-alani">
-        <label>Kontenjan</label>
-        <input type="number" value={capacity} onChange={(e) => setCapacity(Number(e.target.value))} />
-      </div>
+        <div style={{ marginBottom: "16px" }}>
+          <label style={{ display: "block", marginBottom: "3px", fontSize: "13px" }}>Açıklama</label>
+          <textarea
+            name="description"
+            className={`textarea-field ${errors.description ? "error" : ""}`}
+            aria-invalid={errors.description ? true : undefined}
+            rows={3}
+            value={data.description}
+            onChange={handleChange}
+          />
+          {errors.description && <span className="hata-metni error-text">{errors.description}</span>}
+        </div>
 
-      <div className="form-alani">
-        <label>Açıklama</label>
-        <textarea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} />
-      </div>
-
-      <button type="submit">{initialData ? "Güncelle" : "Kaydet"}</button>
-    </form>
+        <button type="submit" className="btn-theme">{submitText}</button>
+      </form>
+    </div>
   );
 }
 

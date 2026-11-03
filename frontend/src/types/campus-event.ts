@@ -1,13 +1,13 @@
-export type Category = "Seminer" | "Atölye" | "Söyleşi" | "Yarışma";
+export type EventCategory = "Seminer" | "Atölye" | "Söyleşi" | "Yarışma" | string;
 
 export interface CampusEvent {
   id: string;
   title: string;
-  category: Category;
-  capacity: number;
   date: string;
-  time: string;
   location: string;
+  category: EventCategory;
+  quota: number;
   description: string;
-  image?: string;
 }
+
+export type EventFormData = Omit<CampusEvent, "id">;

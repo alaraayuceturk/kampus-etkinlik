@@ -1,7 +1,7 @@
-function Footer() {
+export function Footer() {
   return (
-    <footer>
-      <p>Alara Yücetürk 2026</p>
+    <footer className="footer">
+      Alara Yücetürk - 2416501005 - 2026
     </footer>
   );
 }

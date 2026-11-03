@@ -1,32 +1,18 @@
-# React + TypeScript + Vite
+# Kampüs Etkinlik Yönetim Sistemi (Vize Projesi)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Bu proje React, TypeScript ve Context API kullanılarak geliştirilmiş kampüs etkinlik yönetim uygulamasıdır.
 
-Currently, two official plugins are available:
+## 🚀 Canlı Yayın
+Vercel Adresi: [https://alarayuceturk-frontend.vercel.app](https://alarayuceturk-frontend.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📌 Özellikler
+- 10 Adet Router Tanımı (`/`, `/events`, `/events/:id`, `/admin`, `/admin/new`, `/admin/edit/:id`, `/login`, `/register`, `/forgot-password`, `*`)
+- Context API ile Global State Yönetimi & CRUD Operasyonları
+- Silme işlemi öncesinde `window.confirm` onay penceresi
+- Form Validation (Giriş, Kayıt, Şifremi Unuttum ve Etkinlik Ekle/Düzenle formlarında zorunlu alan doğrulaması)
+- Responsive (Mobil ve Masaüstü tam uyumlu) tasarım
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 🛠️ Yerel Kurulum
+```bash
+npm install
+npm run dev
