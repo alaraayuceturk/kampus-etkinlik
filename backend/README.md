@@ -2,8 +2,10 @@
 
 ## Çalıştırma Komutları
 
+```bash
 npm install
 npm run dev
+``` 
 
 ## REST API Sözleşmesi
 
